@@ -21,24 +21,29 @@ app.use(helmet({
 
 // Konfigurasi CORS Terbatas & Aman (Poin 6)
 const allowedOrigins = [
-  process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : null,
   'http://localhost:5173',
   'http://localhost:3000'
 ].filter(Boolean);
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Izinkan request tanpa origin atau dalam mode dev / localhost / origin terdaftar
+    // 1. Request tanpa origin (seperti Postman, server-to-server)
+    if (!origin) return callback(null, true);
+
+    const cleanOrigin = origin.replace(/\/$/, '');
+
+    // 2. Izinkan mode dev, origin terdaftar, domain *.vercel.app, atau localhost
     if (
-      !origin ||
       process.env.NODE_ENV !== 'production' ||
-      allowedOrigins.includes(origin) ||
-      /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
+      allowedOrigins.includes(cleanOrigin) ||
+      /\.vercel\.app$/.test(cleanOrigin) ||
+      /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(cleanOrigin)
     ) {
-      callback(null, true);
-    } else {
-      callback(new Error('Akses dibatasi oleh kebijakan CORS'));
+      return callback(null, true);
     }
+
+    return callback(new Error('Akses dibatasi oleh kebijakan CORS'));
   },
   credentials: true, // mengizinkan cookies
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
