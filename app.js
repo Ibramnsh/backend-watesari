@@ -33,11 +33,12 @@ const corsOptions = {
 
     const cleanOrigin = origin.replace(/\/$/, '');
 
-    // 2. Izinkan mode dev, origin terdaftar, domain *.vercel.app, atau localhost
+    // 2. Izinkan mode dev, origin terdaftar, domain *.vercel.app, watesari.web.id, atau localhost
     if (
       process.env.NODE_ENV !== 'production' ||
       allowedOrigins.includes(cleanOrigin) ||
       /\.vercel\.app$/.test(cleanOrigin) ||
+      /watesari\.web\.id$/.test(cleanOrigin) ||
       /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(cleanOrigin)
     ) {
       return callback(null, true);
