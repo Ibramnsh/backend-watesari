@@ -1,23 +1,14 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const Admin = require('../models/Admin');
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/watesari');
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
-    
-    // Seed default admin if not exists
-    const adminExists = await Admin.findOne({ username: 'admin' });
-    if (!adminExists) {
-      const hashedPassword = await bcrypt.hash('admin123', 10);
-      await Admin.create({
-        username: 'admin',
-        password: hashedPassword,
-        role: 'superadmin'
-      });
-      console.log('Default admin created (admin / admin123)');
+    const uri = process.env.MONGODB_URI;
+    if (!uri) {
+      throw new Error('MONGODB_URI belum dikonfigurasi pada environment variable');
     }
+
+    const conn = await mongoose.connect(uri);
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error(`Error connecting to MongoDB: ${error.message}`);
     process.exit(1);

@@ -2,10 +2,16 @@ const express = require('express');
 const router = express.Router();
 const kategoriController = require('../controllers/kategoriController');
 const auth = require('../middleware/authMiddleware');
+const role = require('../middleware/roleMiddleware');
 
+// Akses Publik
 router.get('/', kategoriController.getAllKategori);
-router.post('/', auth, kategoriController.createKategori);
-router.put('/:id', auth, kategoriController.updateKategori);
-router.delete('/:id', auth, kategoriController.deleteKategori);
+
+// Akses Khusus Admin / Superadmin (Poin 8)
+const adminAuth = [auth, role('admin', 'superadmin')];
+
+router.post('/', adminAuth, kategoriController.createKategori);
+router.put('/:id', adminAuth, kategoriController.updateKategori);
+router.delete('/:id', adminAuth, kategoriController.deleteKategori);
 
 module.exports = router;

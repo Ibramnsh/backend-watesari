@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Uploads & Local Temp
+uploads/*
+!uploads/.gitkeep
+
+# Operating System
+.DS_Store
+Thumbs.db
